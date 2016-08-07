@@ -7,6 +7,9 @@
 .idea/dictionaries
 .idea/vcs.xml
 .idea/jsLibraryMappings.xml
+.idea/MonteCarlo.iml
+.idea/misc.xml
+__pycache__/parser.cpython-35.pyc
 
 # Sensitive or high-churn files:
 .idea/dataSources.ids
