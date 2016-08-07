@@ -1,0 +1,22 @@
+N                      8
+Discountrate           5%
+Efficacy               dist('normal',50,15)
+Alternative            dist('triangular',70,100,70)
+MarketSizeDist         dist('normal',1800,100)
+E                      Efficacy.sample
+A                      Alternative.sample
+MarketingCosts         E>84 ? 7 : 0.0
+MarketingCostGrowth    4%
+MarketSizeGrowth       6%
+Costs                  10
+Year                   2012.count(N)
+MarketSizeStart        MarketSizeDist.sample
+MarketSize             MarketSizeStart.grow(N,MarketSizeGrowth)
+MarketShareStart       E>84 ? E**2/(E**2 + A**2)-0.4 : 0.0 
+MarketShare            MarketShareStart.grow(N,0)
+GrossProfit            MarketSize*MarketShare
+Marketing              MarketingCosts.grow(N,MarketingCostGrowth)
+Profit                 GrossProfit - Marketing
+NPVUncorrected         Profit.npv(Discountrate)
+NPVCorrected           (NPVUncorrected*(1 + Discountrate)**0.5)/(1 + Discountrate)**3
+NPV                    NPVCorrected-Costs

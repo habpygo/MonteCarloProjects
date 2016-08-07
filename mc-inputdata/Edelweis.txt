@@ -1,0 +1,35 @@
+#Variable		Distribution		Mean		STDV	C	Value
+N                        10 								# pp 14
+PGI                      150 								#Potential Gross Income; pp 14 and 22 table 1
+GPGIValue                dist('normal',0.02, 0.01)					# pp 15 bovenaan en pp 23
+GPGIFree		 GPGIValue.sample 					# Growth in PGI
+GPGI		 	 GPGIValue.sample(0,0.03)
+VRate                    dist('uniform',0.04,0.08) 					# Vacancy rate
+					# fixed is 10% and is added to the 5% and 20%. Most likely is 23%
+OpExpenseDist	         dist('triangular', 0.15, 0.3, 0.23) 				# pp 15 and 22, table 1
+OpExpense	         OpExpenseDist.sample
+TotOpExpense             OpExpense*PGI  
+CapitalExpenditure       0 0 150 0 0 0 0 0 0 0 						# Building "Edelweis" pp 14
+Revspeed                 0.48
+Lteq                     0.04								# pp 17
+Sigma                    0.021
+Eta                      dist('normal',0,1)
+E                        Eta.sample
+R                  	 0.0075.cir(N, Revspeed, Lteq, Sigma, E) 
+CirDiscountRate          R[-1]
+LongTermGrowthRate       0.02
+Year                     1.count(N)
+GrossIncome              PGI.grow(N,GPGIFree)
+VacancyRate              VRate.sample
+Vacancy			 GrossIncome*VacancyRate
+Income              	 GrossIncome - Vacancy
+FreeCashFlow             Income - CapitalExpenditure - TotOpExpense
+LastCashFlow		 FreeCashFlow[-1]
+ExitValue		 FreeCashFlow.gradval(GPGI, CirDiscountRate)
+CorrectedEV		 ExitValue[-1]<0 ? 0 : ExitValue	
+TotFreeCF		 FreeCashFlow+CorrectedEV
+CirCF			 TotFreeCF/((CirDiscountRate+1)**Year)
+CirNPV			 CirCF.sum							# Outcome on pp 17 (CHF 5.67 mln)
+
+# NOTE VOOR HB: Shift + Command-t maakt van rtf file een txt file
+
